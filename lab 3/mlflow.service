@@ -1,0 +1,19 @@
+[Unit]
+Description=MLflow Tracking Server
+After=network.target
+
+[Service]
+User=aiying
+Group=aiying
+WorkingDirectory=/opt/mlflow/server/
+ExecStart=/usr/local/bin/mlflow server \
+	--backend-store-uri sqlite:////opt/mlflow/server/mlflow.db \
+	--default-artifact-root file:///opt/mlflow/server/artifacts \
+	--host 127.0.0.1 \
+	--port 5000 \
+	--allowed-hosts mlflow.labs.itmo.loc,127.0.0.1,localhost
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
