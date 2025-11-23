@@ -1,0 +1,18 @@
+; BIND reverse data file for 192.168.0.0/24
+$TTL	604800
+@	IN	SOA	ns1.labs.itmo.loc.	admin.labs.itmo.loc. (
+				2025101101	; Serial
+				604800		; Refresh
+				86400		; Retry
+				2419200		; Expire
+				604800 )	; Negative Cache TTL
+
+; Named servers
+@	IN	NS	ns1.labs.itmo.loc.
+@	IN	NS	ns2.labs.itmo.loc.
+
+; PTR records
+228	IN	PTR	ns1.labs.itmo.loc.
+228	IN	PTR	k8s.labs.itmo.loc.
+228	IN	PTR	kubernetes.labs.itmo.loc.
+102	IN	PTR	mlflow.labs.itmo.loc.

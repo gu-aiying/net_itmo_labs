@@ -1,0 +1,25 @@
+; BIND data file for labs.itmo.loc
+$TTL	604800
+@	IN	SOA	ns1.labs.itmo.loc. admin.labs.itmo.loc. (
+				2025101101	; Serial
+				604800		; Refresh
+				86400		; Retry
+				2419200		; Expire
+				604800 )	; Negative Cache TTL
+
+; Name servers
+@	IN	NS	ns1.labs.itmo.loc.
+@	IN	NS	ns2.labs.itmo.loc.
+
+; A records
+ns1	IN	A	192.168.0.228
+ns2	IN	A	192.168.0.228
+
+; Kubernetes domain wildcard - points to VM1
+*.k8s		IN	A	192.168.0.228
+k8s		IN	A	192.168.0.228
+kubernetes	IN	A	192.168.0.228
+
+; MLflow server - points to VM2
+mlflow	IN	A	192.168.0.102
+
