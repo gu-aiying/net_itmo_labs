@@ -1,0 +1,18 @@
+cluster:
+  enabled: false
+
+minio:
+  mode: standalone
+  persistence:
+    storageClass: microk8s-hostpath
+    size: 5Gi
+
+etcd:
+  replicaCount: 1
+  persistence:
+    storageClass: microk8s-hostpath
+    size: 5Gi
+
+pulsarv3:
+  enabled: false
+

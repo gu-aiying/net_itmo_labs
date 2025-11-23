@@ -1,0 +1,31 @@
+# externalURL: https://harbor.k8s.labs.itmo.loc
+
+# harborAdminPassword: "1234"
+
+expose:
+  type: ingress
+  ingress:
+    hosts:
+      core: harbor.k8s.labs.itmo.loc
+      notary: notary.harbor.k8s.labs.itmo.loc
+    ingressClass: nginx
+    tls:
+      - hosts:
+          - harbor.k8s.labs.itmo.loc
+          - notary.harbor.k8s.labs.itmo.loc
+        secretName: wildcard-k8s-tls
+
+persistence:
+  imageChartStorage:
+    storageClass: microk8s-hostpath
+  jobservice:
+    storageClass: microk8s-hostpath
+  database:
+    storageClass: microk8s-hostpath
+  redis:
+    storageClass: microk8s-hostpath
+redis:
+  auth:
+    enabled: false
+
+

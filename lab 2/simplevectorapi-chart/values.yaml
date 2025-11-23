@@ -1,0 +1,98 @@
+# Default values for simplevectorapi-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# --- 1. Основные настройки ---
+replicaCount: 1
+fullnameOverride: "sva"
+# --- 2. Настройки образа (Harbor) ---
+image:
+  repository: harbor.k8s.labs.itmo.loc/public/simplevectorapi
+  pullPolicy: IfNotPresent
+  tag: "2.0.0"
+
+# Секрет для загрузки из Harbor (даже если репозиторий Public, это решает проблемы с ImagePullBackOff)
+imagePullSecrets:
+  - name: simplevectorapi-tls-cert
+
+# ... (Остальные настройки: nameOverride, fullnameOverride)
+nameOverride: ""
+fullnameOverride: ""
+
+# --- 3. Настройки ServiceAccount (Используем по умолчанию) ---
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext: {}
+
+# --- 4. Настройки Service и Port ---
+service:
+  type: NodePort # Меняем на NodePort для внешнего доступа, если Ingress не работает
+  port: 8000     # Порт вашего приложения simplevectorapi
+  targetPort: 8000
+
+# --- 5. Настройки Ingress (С TLS) ---
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    # Обязательные аннотации для корректной работы Ingress Controller с TLS
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP" # Ваш бэкенд - HTTP
+  hosts:
+    - host: simplevectorapi.k8s.labs.itmo.loc
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - simplevectorapi.k8s.labs.itmo.loc
+      secretName: wildcard-k8s-tls # Используем ваш созданный Secret
+
+httpRoute:
+  enabled: false # Пока оставляем отключенным
+
+# --- 6. Конфигурация приложения (Переменные окружения) ---
+config:
+  redis:
+    host: redis-master.default.svc.cluster.local # Доменное имя Service Redis
+    port: 6379
+  milvus:
+    host: milvus.default.svc.cluster.local # Доменное имя Service Milvus
+    port: 19530
+
+# --- 7. Настройка Probes (для Health Check) ---
+# Настроим Liveness и Readiness на ваш Health Check, который, вероятно, находится на /health
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 30
+  periodSeconds: 10
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 20
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+resources: {}
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+volumes: []
+volumeMounts: []
+nodeSelector: {}
+tolerations: []
+affinity: {}
