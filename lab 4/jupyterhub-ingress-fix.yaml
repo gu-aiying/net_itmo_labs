@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: jupyterhub-fix
+  namespace: jupyterhub
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  tls:
+  - hosts:
+    - jupyter.k8s.labs.itmo.loc
+    secretName: wildcard-k8s-tls # Убедитесь, что имя секрета верное
+  rules:
+  - host: jupyter.k8s.labs.itmo.loc
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: proxy-public
+            port:
+              number: 80

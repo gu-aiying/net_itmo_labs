@@ -1,0 +1,8 @@
+{
+  "n_estimators": 150,
+  "max_depth": 10,
+  "random_state": 24,
+  "n_features": 25,
+  "test_accuracy": 0.9066666666666666,
+  "train_accuracy": 0.9988888888888889
+}
